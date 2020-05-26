@@ -67,18 +67,17 @@ int main(void)
 {
 	setbuf(stdout,NULL);
 	Cliente* arrayPunterosClientes[CANTIDAD_CLIENTES];
-	//Cliente* pAuxiliarCliente;
 	Publicacion* arrayPunterosAvisos[CANTIDAD_PUBLICACIONES];
 	int opcion;
 	int idCliente = 0;
 	int idPublicacion = 0;
 	int auxiliarIndice;
-	int retorno;
 	int auxiliarId;
 	int auxIdCliente;
 	int auxIndiceCliente;
-	//int auxRubro;
+	int auxRubro;
 	char respuesta;
+	int retorno;
 
 	if(!cli_initArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES))
 	{
@@ -124,7 +123,7 @@ int main(void)
 								  "11. Salir\n\n",
 								  "OPCION NO VALIDA. ",0,11,2))
 		{
-			switch(opcion)	//Ejecuto un caso dependiendo del valor de opcion
+			switch(opcion)	//La sentencia ejecuta un caso dependiendo del valor de opcion
 			{
 				case 1:	//Alta de cliente
 					auxiliarIndice = cli_getEmptyIndexArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES);
@@ -158,13 +157,18 @@ int main(void)
 						auxiliarIndice = cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarId); //Se verifica existencia de cliente en el array
 						if(auxiliarIndice != -1)
 						{
-							if(!cli_modificarClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarIndice))
+							retorno = cli_modificarClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarIndice);
+							switch(retorno)
 							{
-								printf("\n¡La modificación de datos fue un éxito!\n");
-							}
-							else
-							{
-								printf("\n¡La modificación de datos falló!\n");
+								case 1:
+									printf("\n¡El alta de cliente fue un éxito!\n");
+									break;
+								case 0:
+									printf("\n¡La modificación de datos falló!\n");
+									break;
+								case -1:
+									printf("\n¡ERROR!\n");
+									break;
 							}
 						}
 						else
@@ -381,29 +385,27 @@ int main(void)
 					}
 					break;
 				case 7:	//Imprimir clientes con la cantidad de avisos activos que poseen
-					cli_imprimirClientesArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES);
-					/*if(info_informarClientesConAvisosActivos(pArrayClientes,CANTIDAD_CLIENTES,arrayPublicaciones,CANTIDAD_PUBLICACIONES) == -1)
+					if(info_informarClientesConAvisosActivos(arrayPunterosClientes,CANTIDAD_CLIENTES,arrayPunterosAvisos,CANTIDAD_PUBLICACIONES) == -1)
 					{
 						printf("\n¡ERROR\n");
-					}*/
+					}
 					break;
 				case 8:	//Imprimir publicaciones junto con el cuit del cliente correspondiente
-					pub_imprimirAvisosArrayPunteros(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES);
-/*					if(info_informarAvisosConCuit(arrayPublicaciones,CANTIDAD_PUBLICACIONES,pArrayClientes,CANTIDAD_CLIENTES) == -1)
+					if(info_informarAvisosConCuit(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,arrayPunterosClientes,CANTIDAD_CLIENTES) == -1)
 					{
 						printf("\n¡ERROR!\n");
 					}
 					break;
 				case 9:	//Informar clientes: Cliente con más avisos activos. Cliente con más avisos pausados. Cliente con más avisos.
-					if(info_informarClienteConAvisosMax(arrayPublicaciones,CANTIDAD_PUBLICACIONES,pArrayClientes,CANTIDAD_CLIENTES) == -1)
+					if(info_informarClienteConAvisosMax(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,arrayPunterosClientes,CANTIDAD_CLIENTES) == -1)
 					{
 						printf("\n¡ERROR!\n");
 					}
-					if(info_informarClientesConAvisosActivosMax(arrayPublicaciones,CANTIDAD_PUBLICACIONES,pArrayClientes,CANTIDAD_CLIENTES) == -1)
+					if(info_informarClientesConAvisosActivosMax(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,arrayPunterosClientes,CANTIDAD_CLIENTES) == -1)
 					{
 						printf("\n¡ERROR!\n");
 					}
-					if(info_informarClientesConAvisosPausadosMax(arrayPublicaciones,CANTIDAD_PUBLICACIONES,pArrayClientes,CANTIDAD_CLIENTES) == -1)
+					if(info_informarClientesConAvisosPausadosMax(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,arrayPunterosClientes,CANTIDAD_CLIENTES) == -1)
 					{
 						printf("\n¡ERROR!\n");
 					}
@@ -411,25 +413,28 @@ int main(void)
 				case 10: //Informar publicaciones
 					if(!utn_getNumero(&auxRubro,"Ingresar número de rubro: \n","\nINGRESO NO VALIDO. ",0,1000,2))	//Solicito y valido numero de rubro
 					{
-						if(pub_buscarRubro(arrayPublicaciones,CANTIDAD_PUBLICACIONES,auxRubro) != -1)	//Verifico que el rubro exista en array publicaciones
+						respuesta = pub_buscarRubro(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxRubro);
+						if(respuesta != -1)
 						{
-							info_informarAvisosActivosDeRubro(arrayPublicaciones,CANTIDAD_PUBLICACIONES,auxRubro);
+							if(info_informarAvisosActivosDeRubro(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxRubro) == -1)
+							{
+								printf("\n¡ERROR!\n");
+							}
+							if(info_informarRubroConMasAvisosActivos(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES) == -1)
+							{
+								printf("\n¡ERROR!\n");
+							}
+							if(info_informarRubroConMenosAvisosActivos(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES) == -1)
+							{
+								printf("\n¡ERROR!\n");
+							}
 						}
 						else
 						{
-							printf("\nEl rubro no existe!\n");
-						}
-						if(info_informarRubroConMasAvisosActivos(arrayPublicaciones,CANTIDAD_PUBLICACIONES) == -1)
-						{
-							printf("\n¡ERROR!\n");
-						}
-						if(info_informarRubroConMenosAvisosActivos(arrayPublicaciones,CANTIDAD_PUBLICACIONES) == -1)
-						{
-							printf("\n¡ERROR!\n");
+							printf("\n¡El rubro no existe!\n");
 						}
 					}
 					break;
-*/
 			}
 		}
 		else

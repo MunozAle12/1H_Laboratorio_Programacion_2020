@@ -14,22 +14,6 @@
 static const char ESTADOS_TIPOS[2][8]={"PAUSADA","ACTIVA"};
 
 /**
- * \brief Imprime los datos de un cliente junto con la cantidad de avisos
- * \param pElemento Puntero al elemento del array que se busca imprimir
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
-{
-	int retorno = -1;
-	if(pElemento != NULL)
-	{
-		retorno = 0;
-		printf("\nID: %d - Nombre: %s - Apellido: %s - CUIT: %s - Avisos: %d\n",pElemento->idCliente,pElemento->nombre,pElemento->apellido,pElemento->cuit,*totalAvisos);
-	}
-	return retorno;
-}
-/**
  * \brief Busca e informa lista de clientes junto con la cantidad de avisos activos
  * \param arrayClientes Puntero al espacio de memoria donde comienza el array a ser actualizado
  * \param limiteClientes Tamaño del array de clientes
@@ -38,6 +22,7 @@ int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
  * \return Retorna 0 (EXITO) y -1 (ERROR)
  *
  */
+/*
 int info_informarClientesConAvisosActivos(Cliente* arrayClientes,int limiteClientes,Publicacion* arrayPublicaciones,int limitePublicaciones)
 {
 	int respuesta = -1;
@@ -60,7 +45,7 @@ int info_informarClientesConAvisosActivos(Cliente* arrayClientes,int limiteClien
 	}
 	return respuesta;
 }
-
+*/
 /**
  * \brief Imprime los datos de una publicacion junto con CUIT del cliente correspondiente
  * \param pElementoAviso Puntero al elemento del array que se busca imprimir
@@ -87,6 +72,7 @@ int info_imprimirAvisoConCuit(Publicacion* pElementoAviso,Cliente* pElementoClie
  * \return Retorna 0 (EXITO) y -1 (ERROR)
  *
  */
+/*
 int info_informarAvisosConCuit(Publicacion* arrayPublicaciones,int limitePublicaciones,Cliente* arrayClientes,int limiteClientes)
 {
 	int respuesta = -1;
@@ -109,6 +95,99 @@ int info_informarAvisosConCuit(Publicacion* arrayPublicaciones,int limitePublica
 	}
 	return respuesta;
 }
+*/
+// FUNCIONES VERSION PUNTEROS
+/**
+ * \brief Busca e informa lista de clientes junto con la cantidad de avisos activos
+ * \param arrayClientes Puntero al espacio de memoria donde comienza el array a ser actualizado
+ * \param limiteClientes Tamaño del array de clientes
+ * \param arrayPublicaciones Puntero al espacio de memoria donde comienza el array a ser actualizado
+ * \param limitePublicaciones Tamaño del array de publicaciones
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int info_informarClientesConAvisosActivos(Cliente* arrayClientes[],int limiteClientes,Publicacion* arrayPublicaciones[],int limitePublicaciones)
+{
+	int respuesta = -1;
+	int i;
+	int avisosActivos;
+	if(arrayClientes!=NULL && limiteClientes>0 && arrayPublicaciones!=NULL && limitePublicaciones>0)
+	{
+		for(i=0; i<limiteClientes; i++)
+		{
+			if(arrayClientes[i] != 0)
+			{
+				avisosActivos = pub_calcularAvisosActivosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente);
+				if(avisosActivos != -1)
+				{
+					respuesta = 0;
+					printf("\nID: %d - Nombre: %s - Apellido: %s - CUIT: %s - Avisos: %d\n",arrayClientes[i]->idCliente,
+																							arrayClientes[i]->nombre,
+																							arrayClientes[i]->apellido,
+																							arrayClientes[i]->cuit,
+																							avisosActivos);
+				}
+			}
+		}
+	}
+	return respuesta;
+}
+/**
+ * \brief Busca e informa publicaciones con todos sus datos junto con el cuit del cliente correspondiente
+ * \param arrayPublicaciones Puntero a espacio de memoria donde comienza el array a ser actualizado
+ * \param limitePublicaciones Tamaño del array publicaciones
+ * \param arrayClientes Puntero a espacio de memoria donde comienza el array a ser actualizado
+ * \param limiteClientes Tamaño del array de clientes
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int info_informarAvisosConCuit(Publicacion* arrayPublicaciones[],int limitePublicaciones,Cliente* arrayClientes[],int limiteClientes)
+{
+	int respuesta = -1;
+	int i;
+	int indiceCliente;
+	if(arrayPublicaciones != NULL && limitePublicaciones > 0)
+	{
+		for(i=0; i<limitePublicaciones; i++)
+		{
+			if(arrayPublicaciones[i] != 0)
+			{
+				indiceCliente = cli_buscarIdClienteArrayPunteros(arrayClientes,limiteClientes,arrayPublicaciones[i]->idCliente);
+				if(indiceCliente != -1)
+				{
+					respuesta = 0;
+					printf("\nID Publicacion: %d - Rubro: %d - Aviso: %s - Estado: %s - IdCliente: %d - CUIT: %s\n",arrayPublicaciones[i]->idPublicacion,
+																													arrayPublicaciones[i]->rubro,
+																													arrayPublicaciones[i]->txtAviso,
+																													ESTADOS_TIPOS[arrayPublicaciones[i]->estado],
+																													arrayPublicaciones[i]->idCliente,
+																													arrayClientes[indiceCliente]->cuit);
+				}
+			}
+		}
+	}
+	return respuesta;
+}
+/**
+ * \brief Imprime los datos de un cliente junto con la cantidad de avisos
+ * \param pElemento Puntero al elemento del array que se busca imprimir
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
+{
+	int retorno = -1;
+	if(pElemento != NULL)
+	{
+		retorno = 0;
+		printf("\nID: %d - Nombre: %s - Apellido: %s - CUIT: %s - Avisos: %d\n",pElemento->idCliente,
+																				pElemento->nombre,
+																				pElemento->apellido,
+																				pElemento->cuit,
+																				*totalAvisos);
+	}
+	return retorno;
+}
 /**
  * \brief Busca e informa cliente con mayor cantidad de avisos
  * \param arrayPublicaciones Array de publicaciones a ser analizado
@@ -118,7 +197,7 @@ int info_informarAvisosConCuit(Publicacion* arrayPublicaciones,int limitePublica
  * \return Retorna 0 (EXITO), -1 (ERROR)
  *
  */
-int info_informarClienteConAvisosMax(Publicacion* arrayPublicaciones,int limitePublicaciones,Cliente* arrayClientes,int limiteClientes)
+int info_informarClienteConAvisosMax(Publicacion* arrayPublicaciones[],int limitePublicaciones,Cliente* arrayClientes[],int limiteClientes)
 {
 	int respuesta = -1;
 	int cantidadAvisos;
@@ -129,14 +208,14 @@ int info_informarClienteConAvisosMax(Publicacion* arrayPublicaciones,int limiteP
 	{
 		for(i=0; i<limiteClientes; i++)
 		{
-			if(arrayClientes[i].isEmpty != 1)
+			if(arrayClientes[i] != 0)
 			{
-				cantidadAvisos = pub_calcularAvisosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i].idCliente);
+				cantidadAvisos = pub_calcularAvisosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente);
 				if( cantidadAvisos!= -1 &&
 					(i==0 || cantidadAvisos > cantidadAvisosMax) )
 				{
 					respuesta = 0;
-					clienteConMasAvisos = arrayClientes[i];
+					clienteConMasAvisos = *arrayClientes[i];
 					cantidadAvisosMax = cantidadAvisos;
 				}
 			}
@@ -156,7 +235,7 @@ int info_informarClienteConAvisosMax(Publicacion* arrayPublicaciones,int limiteP
  * \return Retorna 0 (EXITO), -1 (ERROR)
  *
  */
-int info_informarClientesConAvisosActivosMax(Publicacion* arrayPublicaciones,int limitePublicaciones,Cliente* arrayClientes,int limiteClientes)
+int info_informarClientesConAvisosActivosMax(Publicacion* arrayPublicaciones[],int limitePublicaciones,Cliente* arrayClientes[],int limiteClientes)
 {
 	int respuesta = -1;
 	int cantidadAvisos;
@@ -167,14 +246,14 @@ int info_informarClientesConAvisosActivosMax(Publicacion* arrayPublicaciones,int
 	{
 		for(i=0; i<limiteClientes; i++)
 		{
-			if(arrayClientes[i].isEmpty != 1)
+			if(arrayClientes[i] != 0)
 			{
-				cantidadAvisos = pub_calcularAvisosActivosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i].idCliente);
+				cantidadAvisos = pub_calcularAvisosActivosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente);
 				if( cantidadAvisos != -1 &&
 					(i==0 || cantidadAvisos > cantidadAvisosMax) )
 				{
 					respuesta = 0;
-					clienteConMasAvisos = arrayClientes[i];
+					clienteConMasAvisos = *arrayClientes[i];
 					cantidadAvisosMax = cantidadAvisos;
 				}
 			}
@@ -194,7 +273,7 @@ int info_informarClientesConAvisosActivosMax(Publicacion* arrayPublicaciones,int
  * \return Retorna 0 (EXITO), -1 (ERROR)
  *
  */
-int info_informarClientesConAvisosPausadosMax(Publicacion* arrayPublicaciones,int limitePublicaciones,Cliente* arrayClientes,int limiteClientes)
+int info_informarClientesConAvisosPausadosMax(Publicacion* arrayPublicaciones[],int limitePublicaciones,Cliente* arrayClientes[],int limiteClientes)
 {
 	int respuesta = -1;
 	int cantidadAvisos;
@@ -205,14 +284,14 @@ int info_informarClientesConAvisosPausadosMax(Publicacion* arrayPublicaciones,in
 	{
 		for(i=0; i<limiteClientes; i++)
 		{
-			if(arrayClientes[i].isEmpty != 1)
+			if(arrayClientes[i] != 0)
 			{
-				cantidadAvisos = pub_calcularAvisosPausadosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i].idCliente);
+				cantidadAvisos = pub_calcularAvisosPausadosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente);
 				if( cantidadAvisos != -1 &&
 					(i==0 || cantidadAvisos > cantidadAvisosMax) )
 				{
 					respuesta = 0;
-					clienteConMasAvisos = arrayClientes[i];
+					clienteConMasAvisos = *arrayClientes[i];
 					cantidadAvisosMax = cantidadAvisos;
 				}
 			}
@@ -231,18 +310,18 @@ int info_informarClientesConAvisosPausadosMax(Publicacion* arrayPublicaciones,in
  * \return Retorna 0 (EXITO), -1 (ERROR)
  *
  */
-int info_informarAvisosActivosDeRubro(Publicacion* array,int limite,int rubroBuscado)
+int info_informarAvisosActivosDeRubro(Publicacion* array[],int limite,int rubroBuscado)
 {
 	int respuesta = -1;
 	int cantidadAvisos;
 	if(array != NULL && limite >= 0 && rubroBuscado > 0)
 	{
-		cantidadAvisos = pub_calcularAvisosActivosDeRubro(array,limite,rubroBuscado);
+		cantidadAvisos = pub_calcularAvisosDeRubroPorEstado(array,limite,rubroBuscado,ESTADO_ACTIVO);
 		if(cantidadAvisos != -1)
 		{
 			respuesta = 0;
 			printf("\nLa cantidad de avisos activos del rubro %d es: %d\n",rubroBuscado,cantidadAvisos);
-			pub_imprimirAvisosPorRubro(array,limite,rubroBuscado);
+			pub_imprimirAvisosDeRubro(array,limite,rubroBuscado);
 		}
 	}
 	return respuesta;
@@ -254,31 +333,36 @@ int info_informarAvisosActivosDeRubro(Publicacion* array,int limite,int rubroBus
  * \return Retorna 0 (EXITO), -1 (ERROR)
  *
  */
-int info_informarRubroConMasAvisosActivos(Publicacion* array,int limite)
+int info_informarRubroConMasAvisosActivos(Publicacion* array[],int limite)
 {
 	int respuesta = -1;
 	int i;
+	int listaRubros[limite];
 	int cantidadAvisos;
 	int cantidadAvisosMax;
 	int rubroConMasAvisos;
 	if(array != NULL && limite >= 0)
 	{
-		for(i=0; i<limite; i++)
+		utn_initArrayInt(listaRubros,limite);
+		if(!pub_listarRubrosPorEstado(array,limite,listaRubros,ESTADO_ACTIVO))
 		{
-			if(array[i].isEmpty != 1 && array[i].estado == ESTADO_ACTIVO)
+			for(i=0; i<limite; i++)
 			{
-				cantidadAvisos = pub_calcularAvisosActivosDeRubro(array,limite,array[i].rubro);
-				if( cantidadAvisos != -1 &&
-					(i==0 || cantidadAvisos > cantidadAvisosMax) )
+				if(listaRubros[i] != 0)
 				{
-					respuesta = 0;
-					rubroConMasAvisos = array[i].rubro;
-					cantidadAvisosMax = cantidadAvisos;
+					cantidadAvisos = pub_calcularAvisosDeRubroPorEstado(array,limite,listaRubros[i],ESTADO_ACTIVO);
+					if( cantidadAvisos != -1 &&
+						(i==0 || cantidadAvisos > cantidadAvisosMax) )
+					{
+						respuesta = 0;
+						rubroConMasAvisos = array[i]->rubro;
+						cantidadAvisosMax = cantidadAvisos;
+					}
 				}
 			}
 		}
 		printf("\nRubro con mas avisos activos: %d - Total avisos: %d\n",rubroConMasAvisos,cantidadAvisosMax);
-		pub_imprimirAvisosPorRubro(array,limite,rubroConMasAvisos);
+		pub_imprimirAvisosDeRubro(array,limite,rubroConMasAvisos);
 	}
 	return respuesta;
 }
@@ -289,31 +373,36 @@ int info_informarRubroConMasAvisosActivos(Publicacion* array,int limite)
  * \return Retorna 0 (EXITO), -1 (ERROR)
  *
  */
-int info_informarRubroConMenosAvisosActivos(Publicacion* array,int limite)
+int info_informarRubroConMenosAvisosActivos(Publicacion* array[],int limite)
 {
 	int respuesta = -1;
 	int i;
+	int listaRubros[limite];
 	int cantidadAvisos;
 	int cantidadAvisosMin;
 	int rubroConMenosAvisos;
 	if(array != NULL && limite >= 0)
 	{
-		for(i=0; i<limite; i++)
+		utn_initArrayInt(listaRubros,limite);
+		if(!pub_listarRubrosPorEstado(array,limite,listaRubros,ESTADO_ACTIVO))
 		{
-			if(array[i].isEmpty != 1 && array[i].estado == ESTADO_ACTIVO)
+			for(i=0; i<limite; i++)
 			{
-				cantidadAvisos = pub_calcularAvisosActivosDeRubro(array,limite,array[i].rubro);
-				if( cantidadAvisos != -1 &&
-					(i==0 || cantidadAvisos < cantidadAvisosMin) )
+				if(listaRubros[i] != 0)
 				{
-					respuesta = 0;
-					rubroConMenosAvisos = array[i].rubro;
-					cantidadAvisosMin = cantidadAvisos;
+					cantidadAvisos = pub_calcularAvisosDeRubroPorEstado(array,limite,listaRubros[i],ESTADO_ACTIVO);
+					if( cantidadAvisos != -1 &&
+						(i==0 || cantidadAvisos < cantidadAvisosMin) )
+					{
+						respuesta = 0;
+						rubroConMenosAvisos = array[i]->rubro;
+						cantidadAvisosMin = cantidadAvisos;
+					}
 				}
 			}
 		}
 		printf("\nRubro con menos avisos activos: %d - Total avisos: %d\n",rubroConMenosAvisos,cantidadAvisosMin);
-		pub_imprimirAvisosPorRubro(array,limite,rubroConMenosAvisos);
+		pub_imprimirAvisosDeRubro(array,limite,rubroConMenosAvisos);
 	}
 	return respuesta;
 }
