@@ -113,7 +113,33 @@ int cli_DarAltaClienteArrayPunteros(Cliente* array[],int limite,int indiceLibre,
 	return respuesta;
 }
 /**
- * \brief Da de alta un cliente en una posicion del puntero a array del tipo Cliente* modo DEBUG
+ * \brief Busca y verifica si existe o no un CUIT en un array
+ * \param array Puntero al espacio de memoria donde comienza el array a ser analizado
+ * \param limite Tamaño del array de clientes
+ * \param valorBuscado valor del CUIT a ser buscado
+ * \return Return Retorna el indice donde se encuentra el valor buscado, (-1) si no encuentra el valor buscado
+ *
+ */
+int cli_buscarCuitArrayPunteros(Cliente* array[],int limite,char* valorBuscado)
+{
+    int retorno = -1;
+    int i;
+    if(array!= NULL && limite >= 0)
+    {
+        for(i=0; i<limite; i++)
+        {
+            if( array[i] != 0 &&
+            	strncmp(array[i]->cuit,valorBuscado,CUIT_LEN) == 0)
+            {
+                retorno = i;
+                break;
+            }
+        }
+    }
+    return retorno;
+}
+/**
+ * \brief Da de alta un cliente en una posicion del array de punteros del tipo Cliente* en modo DEBUG
  * \param array Puntero a espacio de memoria donde comienza el array a ser actualizado
  * \param limite Tamaño del array de clientes
  * \param indice Posicion a ser actualizada
@@ -201,53 +227,35 @@ int cli_modificarClienteArrayPunteros(Cliente* array[],int limite,int indice)
 	return respuesta;
 }
 /**
- * \brief Busca y verifica si existe o no un CUIT en un array
- * \param array Puntero al espacio de memoria donde comienza el array a ser analizado
- * \param limite Tamaño del array de clientes
- * \param valorBuscado valor del CUIT a ser buscado
- * \return Return Retorna el indice donde se encuentra el valor buscado, (-1) si no encuentra el valor buscado
+ * \brief Busca en el array de punteros a los clientes e imprime sus datos en pantalla
+ * \param array Puntero al espacio de memoria donde comienza el array de punteros del tipo cliente* a ser actualizado
+ * \param limite Tamaño del array a ser actualizado
+ * \return Retorna -1 si no hay clientes a imprimir o ERROR, 0 si pudo imprimir al menos un cliente
  *
  */
-int cli_buscarCuitArrayPunteros(Cliente* array[],int limite,char* valorBuscado)
-{
-    int retorno = -1;
-    int i;
-    if(array!= NULL && limite >= 0)
-    {
-        for(i=0; i<limite; i++)
-        {
-            if( array[i] != 0 &&
-            	strncmp(array[i]->cuit,valorBuscado,CUIT_LEN) == 0)
-            {
-                retorno = i;
-                break;
-            }
-        }
-    }
-    return retorno;
-}
-/**
- * \brief Da de baja a un cliente en una posicion del array
- * \param array Puntero a espacio de memoria donde comienza el array a ser actualizado
- * \param limite Tamaño del array de clientes
- * \param indice Posición a ser actualizada
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int cli_DarBajaClienteArrayPunteros(Cliente* array[],int limite,int indice)
+int cli_imprimirClientesArrayPunteros(Cliente* array[],int limite)
 {
 	int respuesta = -1;
-	if(array != NULL && limite > 0 && indice < limite)
+	int i;
+	if(array != NULL && limite > 0)
 	{
-		respuesta = 0;
-		array[indice] = NULL;
+		for(i=0; i<limite; i++)
+		{
+			if(array[i] != 0)
+			{
+				if(!cli_imprimirCliente(array[i]))
+				{
+					respuesta = 0;
+				}
+			}
+		}
 	}
 	return respuesta;
 }
 /**
- * \brief Imprime los datos de un cliente
+ * \brief Imprime los datos de un puntero a cliente
  * \param pElemento Puntero al elemento del array que se busca imprimir
- * \return Retorna 0 (EXITO) y -1 (ERROR)
+ * \return Retorna -1 si hubo ERROR, 0 si pudo imprimir cliente
  *
  */
 int cli_imprimirCliente(Cliente* pElemento)
@@ -263,30 +271,33 @@ int cli_imprimirCliente(Cliente* pElemento)
 	}
 	return retorno;
 }
+
+
+
+
+
+
+
+
+
+
 /**
- * \brief Imprime el array de clientes
- * \param array Puntero al espacio de memoria donde comienza el array a ser actualizado
- * \param limite Tamaño del array a ser actualizado
+ * \brief Da de baja a un cliente en una posicion del array
+ * \param array Puntero a espacio de memoria donde comienza el array a ser actualizado
+ * \param limite Tamaño del array de clientes
+ * \param indice Posición a ser actualizada
  * \return Retorna 0 (EXITO) y -1 (ERROR)
  *
  */
-int cli_imprimirClientesArrayPunteros(Cliente* array[],int limite)
+int cli_DarBajaClienteArrayPunteros(Cliente* array[],int limite,int indice)
 {
 	int respuesta = -1;
-	int i;
-	if(array != NULL && limite > 0)
+	if(array != NULL && limite > 0 && indice < limite)
 	{
-		for(i=0; i<limite; i++)
-		{
-			if(array[i] != 0)
-			{
-				respuesta = 0;
-				printf("ID: %d - Nombre: %s - Apellido: %s - CUIT: %s\n",array[i]->idCliente,
-																		 array[i]->nombre,
-																		 array[i]->apellido,
-																		 array[i]->cuit);
-			}
-		}
+		respuesta = 0;
+		free(array[indice]);
+		array[indice] = NULL;
 	}
 	return respuesta;
 }
+

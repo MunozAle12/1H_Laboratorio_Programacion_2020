@@ -22,21 +22,23 @@ struct publicacion
 
 Publicacion* pub_reservarMemoriaDinamicaParaNuevoAviso(void);
 int pub_initArrayPunteros(Publicacion* array[],int limite);
+int pub_imprimirAvisosDeCliente(Publicacion* array[],int limite,int valorBuscado);
+int pub_imprimirPublicacion(Publicacion* pElemento);
+int pub_DarBajaAvisosArrayPunteros(Publicacion* array[],int limite,int valorBuscado);
+int pub_getEmptyIndexArrayPunteros(Publicacion* array[],int limite);
+int pub_DarAltaAvisoArrayPunteros(Publicacion* array[],int limite,int indice,int* idPublicacion,int idCliente);
+int pub_buscarIdAvisoArrayAvisos(Publicacion* array[],int limite,int valorBuscado);
+int pub_cambiarEstadoDeAviso(Publicacion* pElemento);
+int pub_calcularAvisosDeClientePorEstado(Publicacion* array[], int limite, int valorBuscado,int estadoBuscado);
+int pub_calcularAvisosDeCliente(Publicacion* array[],int limite,int valorBuscado);
+int pub_buscarRubro(Publicacion* array[], int limite, int valorBuscado);
+int pub_imprimirAvisosDeRubro(Publicacion* array[],int limite,int valorBuscado);
+int pub_listarRubrosPorEstado(Publicacion* pArray[],int limite,int pListaRubros[],int estadoBuscado);
+int pub_calcularAvisosDeRubroPorEstado(Publicacion* array[],int limite,int valorBuscado,int estadoBuscado);
 
-int pub_getEmptyIndexArrayPunteros(Publicacion* array[],int limite); //LATE
-int pub_DarAltaAvisoArrayPunteros(Publicacion* array[],int limite,int indice,int* idPublicacion,int idCliente); //LATE
-int pub_imprimirAvisosArrayPunteros(Publicacion* array[],int limite); //LATE
-int pub_buscarIdAvisoArrayAvisos(Publicacion* array[], int limite, int valorBuscado); //LATE
-int pub_cambiarEstadoDeAviso(Publicacion* pElemento); //LATE
-int pub_calcularAvisosDeCliente(Publicacion* array[],int limite,int valorBuscado); //LATE
-int pub_calcularAvisosActivosDeCliente(Publicacion* array[], int limite, int valorBuscado); //LATE
-int pub_calcularAvisosPausadosDeCliente(Publicacion* array[], int limite, int valorBuscado); //LATE
-int pub_imprimirAvisosDeCliente(Publicacion* array[],int limite,int valorBuscado); //LATE
-int pub_listarRubrosPorEstado(Publicacion* pArray[],int limite,int pListaRubros[],int estadoBuscado); //LATE
-int pub_calcularAvisosDeRubroPorEstado(Publicacion* array[],int limite,int valorBuscado,int estadoBuscado); //LATE
-int pub_buscarRubro(Publicacion* array[], int limite, int valorBuscado); //LATE
-int pub_imprimirAvisosDeRubro(Publicacion* array[],int limite,int valorBuscado); //LATE
-int pub_imprimirPublicacion(Publicacion* pElemento); //LATE
+
+//int pub_imprimirAvisosArrayPunteros(Publicacion* array[],int limite); //LATE
+//int pub_calcularAvisosPausadosDeCliente(Publicacion* array[], int limite, int valorBuscado); //LATE
 
 int pub_DarAltaAvisoArrayPunterosDebug(Publicacion* array[],int limite,int indice,int* idPublicacion,int rubro,char* txtAviso,int idCliente,int estado); //LATE
 

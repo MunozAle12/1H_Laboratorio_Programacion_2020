@@ -16,8 +16,6 @@ int info_informarAvisosActivosDeRubro(Publicacion* array[],int limite,int rubroB
 int info_informarRubroConMasAvisosActivos(Publicacion* array[],int limite);
 int info_informarRubroConMenosAvisosActivos(Publicacion* array[],int limite);
 
-/*FUNCIONES VERSION ANTERIOR*/
-int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalActivos);
-int info_imprimirAvisoConCuit(Publicacion* pElementoAviso,Cliente* pElementoCliente);
+int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos);
 
 #endif /* INFORMES_H_ */

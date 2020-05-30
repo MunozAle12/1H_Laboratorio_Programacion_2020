@@ -57,8 +57,81 @@ int pub_initArrayPunteros(Publicacion* array[],int limite)
 	return respuesta;
 }
 /**
- * \brief Busca primer posicion disponible del puntero a array del tipo publicacion*
- * \param array Puntero a espacio de memoria donde comienza el array del tipo publicacion*
+ * \brief Busca e imprime publicaciones de un cliente en array de punteros del tipo Publicacion*
+ * \param array Puntero a espacio de memoria donde comienza el array de punteros a ser actualizado
+ * \param limite Tamaño del array de publicaciones
+ * \param valorBuscado Valor del ID de cliente a ser buscado
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int pub_imprimirAvisosDeCliente(Publicacion* array[],int limite,int valorBuscado)
+{
+	int respuesta = -1;
+	int i;
+	if(array != NULL && limite > 0 && valorBuscado >= 0)
+	{
+		for(i=0; i<limite; i++)
+		{
+			if( array[i] != 0 &&
+				array[i]->idCliente == valorBuscado)
+			{
+				respuesta = 0;
+				pub_imprimirPublicacion(array[i]);
+			}
+		}
+	}
+	return respuesta;
+}
+/**
+ * \brief Imprime los datos de una publicacion
+ * \param pElemento Puntero al espacio de memoria donde comienza la publicacion que se busca imprimir
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int pub_imprimirPublicacion(Publicacion* pElemento)
+{
+	int retorno = -1;
+	if(pElemento != NULL)
+	{
+		retorno = 0;
+		printf("\nID Publicacion: %d - Rubro: %d - Aviso: %s - Estado: %s - IdCliente: %d\n", pElemento->idPublicacion,
+																							pElemento->rubro,
+																							pElemento->txtAviso,
+																							ESTADOS_TIPOS[pElemento->estado],
+																							pElemento->idCliente);
+	}
+	return retorno;
+}
+/**
+ * \brief Da de baja la/s posicion/es del array de punteros donde se encuentra un ID de cliente buscado
+ * \param array Puntero a espacio de memoria donde empieza el array a ser actualizado
+ * \param limite Tamaño del array de publicaciones
+ * \param valorBuscado Valor del ID de cliente a ser buscado
+ * \return Retorna -1 si hubo ERROR, 0 si el cliente no tiene avisos, 1 si se pudo dar de baja avisos de cliente.
+ *
+ */
+int pub_DarBajaAvisosArrayPunteros(Publicacion* array[],int limite,int valorBuscado)
+{
+	int respuesta = -1;
+	int i;
+	if(array != NULL && limite > 0 && valorBuscado >= 0)
+	{
+		respuesta = 0;
+		for(i=0; i<limite; i++)
+		{
+			if( array[i] != 0 &&
+				array[i]->idCliente == valorBuscado )
+			{
+				respuesta = 1;
+				array[i] = NULL;
+			}
+		}
+	}
+	return respuesta;
+}
+/**
+ * \brief Busca primer posicion disponible del array de punteros del tipo publicacion*
+ * \param array Puntero a espacio de memoria donde comienza el array de punteros
  * \param limite Tamaño del array a ser analizado
  * \return Retorna el indice de la posicion disponible, -1 si hubo ERROR
  *
@@ -118,8 +191,8 @@ int pub_DarAltaAvisoArrayPunteros(Publicacion* array[],int limite,int indice,int
 	return respuesta;
 }
 /**
- * \brief Da de alta una publicacion en una posicion del array modo DEBUG
- * \param array Puntero a espacio de memoria donde comienza el array a ser actualizado
+ * \brief Da de alta una publicacion en una posicion del array de punteros del tipo Publicacion* en modo DEBUG
+ * \param array Puntero a espacio de memoria donde comienza el array de punteros a ser actualizado
  * \param limite Tamaño del array de publicaciones
  * \param indice Posicion a ser actualizada
  * \param idPublicacion Puntero a espacio de memoria donde se encuentra el ID de pubicacion a ser asignado
@@ -155,38 +228,14 @@ int pub_DarAltaAvisoArrayPunterosDebug(Publicacion* array[],int limite,int indic
 	return respuesta;
 }
 /**
- * \brief Imprime el array de publicaciones
- * \param array Puntero al espacio de memoria donde comienza el array a ser actualizado
- * \param limite Tamaño del array a ser actualizado
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int pub_imprimirAvisosArrayPunteros(Publicacion* array[],int limite)
-{
-	int respuesta = -1;
-	int i;
-	if(array != NULL && limite > 0)
-	{
-		for(i=0; i<limite; i++)
-		{
-			if(array[i] != 0)
-			{
-				respuesta = 0;
-				printf("Rubro: %d - Aviso: %s - ID Publicación: %d - Estado: %s - ID Cliente: %d\n",array[i]->rubro,array[i]->txtAviso,array[i]->idPublicacion,ESTADOS_TIPOS[array[i]->estado],array[i]->idCliente);
-			}
-		}
-	}
-	return respuesta;
-}
-/**
- * \brief Busca un ID de publicacion en un array y devuelve la posicion en que se encuentra
- * \param array Array de publicacion
- * \param limite Tamaño del array
+ * \brief Busca un ID de publicacion en array de punteros y devuelve la posicion en la que se encuentra
+ * \param array Puntero a espacio de memoria donde comienza el array de punteros del tipo Publicacion*
+ * \param limite Tamaño del array a ser analizado
  * \param valorBuscado Valor del ID de publicacion a ser buscado
- * \return Retorna (-1) si no encuentra el valor buscado o Error. Si encuentra el valor buscado, retorna el indice donde se encuentra
+ * \return Retorna el indice donde se encuentra el valor buscado, -1 si no lo encuentra o ERROR
  *
  */
-int pub_buscarIdAvisoArrayAvisos(Publicacion* array[], int limite, int valorBuscado)
+int pub_buscarIdAvisoArrayAvisos(Publicacion* array[],int limite,int valorBuscado)
 {
 	int respuesta = -1;
 	int i;
@@ -230,62 +279,6 @@ int pub_cambiarEstadoDeAviso(Publicacion* pElemento)
 	return respuesta;
 }
 /**
- * \brief Busca y calcula la cantidad total de avisos ACTIVOS de un cliente
- * \param array Array de publicaciones
- * \param limite Tamaño del array
- * \param valorBuscado Valor del ID de cliente a ser buscado
- * \return Retorna -1 si no encuentra el valor buscado. Si encuentra el valor buscado, retorna la cantidad de avisos ACTIVOS.
- *
- */
-int pub_calcularAvisosActivosDeCliente(Publicacion* array[],int limite,int valorBuscado)
-{
-	int respuesta = -1;
-	int i;
-	int publicacionesActivas = 0;
-	if(array != NULL && limite > 0 && valorBuscado >= 0)
-	{
-		for(i=0; i<limite; i++)
-		{
-			if( array[i] != 0 &&
-				array[i]->idCliente == valorBuscado &&
-				array[i]->estado == ESTADO_ACTIVO )
-			{
-				publicacionesActivas++;
-			}
-		}
-		respuesta = publicacionesActivas;
-	}
-	return respuesta;
-}
-/**
- * \brief Busca y calcula la cantidad total de avisos PAUSADOS de un cliente
- * \param array Array de publicaciones
- * \param limite Tamaño del array
- * \param valorBuscado Valor del ID de cliente a ser buscado
- * \return Retorna -1 si no encuentra el valor buscado. Si encuentra el valor buscado, retorna la cantidad de avisos PAUSADOS.
- *
- */
-int pub_calcularAvisosPausadosDeCliente(Publicacion* array[],int limite,int valorBuscado)
-{
-	int respuesta = -1;
-	int i;
-	int publicacionesPausadas = 0;
-	if(array != NULL && limite > 0 && valorBuscado >= 0)
-	{
-		for(i=0; i<limite; i++)
-		{
-			if( array[i] != 0 &&
-				array[i]->idCliente == valorBuscado &&
-				array[i]->estado == ESTADO_PAUSA )
-			{
-				publicacionesPausadas++;
-			}
-		}
-		respuesta = publicacionesPausadas;
-	}
-	return respuesta;
-}
-/**
  * \brief Busca y calcula la cantidad total de avisos de un cliente
  * \param array Array de publicaciones
  * \param limite Tamaño del array
@@ -313,56 +306,82 @@ int pub_calcularAvisosDeCliente(Publicacion* array[],int limite,int valorBuscado
 	return respuesta;
 }
 /**
- * \brief Busca e imprime publicaciones de un cliente en el array
- * \param array Puntero a espacio de memoria donde comienza el array a ser actualizado
- * \param limite Tamaño del array de publicaciones
- * \param valorBuscado Valor del ID de cliente a ser buscado
- * \return Retorna 0 (EXITO) y -1 (ERROR)
+ * \brief Busca un rubro de publicacion en un array y devuelve la posicion en que se encuentra
+ * \param array Array de publicacion
+ * \param limite Tamaño del array
+ * \param valorBuscado Valor del rubro a ser buscado
+ * \return Retorna (-1) si no encuentra el valor buscado o Error. Si encuentra el valor buscado, retorna el indice donde se encuentra
  *
  */
-int pub_imprimirAvisosDeCliente(Publicacion* array[],int limite,int valorBuscado)
+int pub_buscarRubro(Publicacion* array[], int limite, int valorBuscado)
 {
 	int respuesta = -1;
 	int i;
-	if(array!=NULL && limite>0 && valorBuscado>=0)
+	if(array != NULL && limite > 0 && valorBuscado > 0)
 	{
 		for(i=0; i<limite; i++)
 		{
 			if( array[i] != 0 &&
-				array[i]->idCliente == valorBuscado)
+				array[i]->rubro == valorBuscado )
 			{
-				respuesta = 0;
-				pub_imprimirPublicacion(array[i]);
+				respuesta = i;
+				break;
 			}
 		}
 	}
 	return respuesta;
 }
 /**
- * \brief Busca y calcula la cantidad total de avisos ACTIVOS de un rubro
- * \param array Array de publicaciones
- * \param limite Tamaño del array
- * \param valorBuscado Valor del rubro a ser buscado
- * \return Retorna -1 si no encuentra el valor buscado. Si encuentra el valor buscado, retorna la cantidad de avisos ACTIVOS.
+ * \brief Busca y calcula la cantidad de avisos ACTIVOS de un cliente
+ * \param array Puntero al espacio de memoria donde comienza el array de punteros del tipo Publicaciones*
+ * \param limite Tamaño del array a analizar
+ * \param valorBuscado Valor del ID de cliente a ser buscado
+ * \return Retorna la cantidad de avisos ACTIVOS de cliente, -1 si no encuentra avisos de cliente o ERROR
  *
  */
-int pub_calcularAvisosDeRubroPorEstado(Publicacion* array[],int limite,int valorBuscado,int estadoBuscado)
+int pub_calcularAvisosDeClientePorEstado(Publicacion* array[],int limite,int valorBuscado,int estadoBuscado)
 {
 	int respuesta = -1;
 	int i;
-	int cantidadAvisos = 0;
+	int publicacionesActivas = 0;
 	if(array != NULL && limite > 0 && valorBuscado >= 0)
 	{
 		for(i=0; i<limite; i++)
 		{
 			if( array[i] != 0 &&
-				array[i]->rubro == valorBuscado &&
+				array[i]->idCliente == valorBuscado &&
 				array[i]->estado == estadoBuscado )
 			{
-				cantidadAvisos++;
+				publicacionesActivas++;
 			}
 		}
-		respuesta = cantidadAvisos;
+		respuesta = publicacionesActivas;
+	}
+	return respuesta;
+}
+/**
+ * \brief Busca e imprime publicaciones de un rubro
+ * \param array Puntero a espacio de memoria donde comienza el array a ser actualizado
+ * \param limite Tamaño del array de publicaciones
+ * \param valorBuscado Valor del rubro a ser buscado
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int pub_imprimirAvisosDeRubro(Publicacion* array[],int limite,int valorBuscado)
+{
+	int respuesta = -1;
+	int i;
+	if(array != NULL && limite > 0 && valorBuscado >= 0)
+	{
+		for(i=0; i<limite; i++)
+		{
+			if( array[i] != 0 &&
+				array[i]->rubro == valorBuscado)
+			{
+				respuesta = 0;
+				pub_imprimirPublicacion(array[i]);
+			}
+		}
 	}
 	return respuesta;
 }
@@ -405,74 +424,95 @@ int pub_listarRubrosPorEstado(Publicacion* pArray[],int limite,int pListaRubros[
 	return respuesta;
 }
 /**
- * \brief Busca un rubro de publicacion en un array y devuelve la posicion en que se encuentra
- * \param array Array de publicacion
+ * \brief Busca y calcula la cantidad total de avisos ACTIVOS de un rubro
+ * \param array Array de publicaciones
  * \param limite Tamaño del array
  * \param valorBuscado Valor del rubro a ser buscado
- * \return Retorna (-1) si no encuentra el valor buscado o Error. Si encuentra el valor buscado, retorna el indice donde se encuentra
+ * \return Retorna -1 si no encuentra el valor buscado. Si encuentra el valor buscado, retorna la cantidad de avisos ACTIVOS.
  *
  */
-int pub_buscarRubro(Publicacion* array[], int limite, int valorBuscado)
+int pub_calcularAvisosDeRubroPorEstado(Publicacion* array[],int limite,int valorBuscado,int estadoBuscado)
 {
 	int respuesta = -1;
 	int i;
-	if(array != NULL && limite > 0 && valorBuscado > 0)
-	{
-		for(i=0; i<limite; i++)
-		{
-			if( array[i] != 0 &&
-				array[i]->rubro == valorBuscado )
-			{
-				respuesta = i;
-				break;
-			}
-		}
-	}
-	return respuesta;
-}
-/**
- * \brief Imprime los datos de una publicacion
- * \param pElemento Puntero al elemento de la publicacion que se busca imprimir
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int pub_imprimirPublicacion(Publicacion* pElemento)
-{
-	int retorno = -1;
-	if(pElemento != NULL)
-	{
-		retorno=0;
-		printf("ID Publicacion: %d - Rubro: %d - Aviso: %s - Estado: %s - IdCliente: %d\n", pElemento->idPublicacion,
-																							pElemento->rubro,
-																							pElemento->txtAviso,
-																							ESTADOS_TIPOS[pElemento->estado],
-																							pElemento->idCliente);
-	}
-	return retorno;
-}
-/**
- * \brief Busca e imprime publicaciones de un rubro
- * \param array Puntero a espacio de memoria donde comienza el array a ser actualizado
- * \param limite Tamaño del array de publicaciones
- * \param valorBuscado Valor del rubro a ser buscado
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int pub_imprimirAvisosDeRubro(Publicacion* array[],int limite,int valorBuscado)
-{
-	int respuesta = -1;
-	int i;
+	int cantidadAvisos = 0;
 	if(array != NULL && limite > 0 && valorBuscado >= 0)
 	{
 		for(i=0; i<limite; i++)
 		{
 			if( array[i] != 0 &&
-				array[i]->rubro == valorBuscado)
+				array[i]->rubro == valorBuscado &&
+				array[i]->estado == estadoBuscado )
+			{
+				cantidadAvisos++;
+			}
+		}
+		respuesta = cantidadAvisos;
+	}
+	return respuesta;
+}
+
+
+
+
+
+
+
+
+
+/**
+ * \brief Imprime el array de publicaciones
+ * \param array Puntero al espacio de memoria donde comienza el array a ser actualizado
+ * \param limite Tamaño del array a ser actualizado
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+/*
+int pub_imprimirAvisosArrayPunteros(Publicacion* array[],int limite)
+{
+	int respuesta = -1;
+	int i;
+	if(array != NULL && limite > 0)
+	{
+		for(i=0; i<limite; i++)
+		{
+			if(array[i] != 0)
 			{
 				respuesta = 0;
-				pub_imprimirPublicacion(array[i]);
+				printf("Rubro: %d - Aviso: %s - ID Publicación: %d - Estado: %s - ID Cliente: %d\n",array[i]->rubro,array[i]->txtAviso,array[i]->idPublicacion,ESTADOS_TIPOS[array[i]->estado],array[i]->idCliente);
 			}
 		}
 	}
 	return respuesta;
 }
+*/
+/**
+ * \brief Busca y calcula la cantidad total de avisos PAUSADOS de un cliente
+ * \param array Array de publicaciones
+ * \param limite Tamaño del array
+ * \param valorBuscado Valor del ID de cliente a ser buscado
+ * \return Retorna -1 si no encuentra el valor buscado. Si encuentra el valor buscado, retorna la cantidad de avisos PAUSADOS.
+ *
+ */
+/*
+int pub_calcularAvisosPausadosDeCliente(Publicacion* array[],int limite,int valorBuscado)
+{
+	int respuesta = -1;
+	int i;
+	int publicacionesPausadas = 0;
+	if(array != NULL && limite > 0 && valorBuscado >= 0)
+	{
+		for(i=0; i<limite; i++)
+		{
+			if( array[i] != 0 &&
+				array[i]->idCliente == valorBuscado &&
+				array[i]->estado == ESTADO_PAUSA )
+			{
+				publicacionesPausadas++;
+			}
+		}
+		respuesta = publicacionesPausadas;
+	}
+	return respuesta;
+}
+*/

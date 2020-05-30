@@ -71,9 +71,9 @@ int main(void)
 	int opcion;
 	int idCliente = 0;
 	int idPublicacion = 0;
-	int auxiliarIndice;
-	int auxiliarId;
+	int auxIdAviso;
 	int auxIdCliente;
+	int auxIndiceAviso;
 	int auxIndiceCliente;
 	int auxRubro;
 	char respuesta;
@@ -126,10 +126,10 @@ int main(void)
 			switch(opcion)	//La sentencia ejecuta un caso dependiendo del valor de opcion
 			{
 				case 1:	//Alta de cliente
-					auxiliarIndice = cli_getEmptyIndexArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES);
-					if(auxiliarIndice != -1)
+					auxIndiceCliente= cli_getEmptyIndexArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES);
+					if(auxIndiceCliente != -1)
 					{
-						retorno = cli_DarAltaClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarIndice,&idCliente);
+						retorno = cli_DarAltaClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIndiceCliente,&idCliente);
 						switch(retorno)
 						{
 							case 1:
@@ -152,12 +152,12 @@ int main(void)
 					}
 					break;
 				case 2:	//Modificar datos del cliente
-					if(!utn_getNumero(&auxiliarId,"Ingrese ID de cliente a modificar: \n","\nINGRESO NO VALIDO. ",0,idCliente,2)) //Se solicita y valida ID cliente
+					if(!utn_getNumero(&auxIdCliente,"Ingrese ID de cliente a modificar: \n","\nINGRESO NO VALIDO. ",0,idCliente,2)) //Se solicita y valida ID cliente
 					{
-						auxiliarIndice = cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarId); //Se verifica existencia de cliente en el array
-						if(auxiliarIndice != -1)
+						auxIndiceCliente = cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIdCliente); //Se verifica existencia de cliente en array
+						if(auxIndiceCliente != -1)
 						{
-							retorno = cli_modificarClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarIndice);
+							retorno = cli_modificarClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIndiceCliente);
 							switch(retorno)
 							{
 								case 1:
@@ -182,34 +182,43 @@ int main(void)
 					}
 					break;
 				case 3:	//Baja de cliente
-					if(!utn_getNumero(&auxiliarId,"Ingrese ID de cliente a dar de baja: \n","\nINGRESO NO VALIDO. ",0,idCliente,2))	//Se solicita y valida ID cliente
+					if(!utn_getNumero(&auxIdCliente,"Ingrese ID de cliente a dar de baja: \n","\nINGRESO NO VALIDO. ",0,idCliente,2))	//Se solicita y valida ID cliente
 					{
-						auxiliarIndice = cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarId);	//Se verifica existencia de cliente en el array
-						if(auxiliarIndice != -1)
+						auxIndiceCliente = cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIdCliente);	//Se verifica existencia de cliente en array
+						if(auxIndiceCliente != -1)
 						{
-							//pub_imprimirAvisosDeCliente(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxiliarId); LO DEJO PARA DESPUES
+							pub_imprimirAvisosDeCliente(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxIdCliente);
 							if(!utn_getLetra(&respuesta,"\n¿Quiere confirmar la eliminación del cliente y sus publicaciones? [s/n]: \n","\nINGRESO NO VÁLIDO. ",2))
 							{
-								if(respuesta=='s')
+								switch(respuesta)
 								{
-									if( !cli_DarBajaClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarIndice) )
-										//	&&
-									//	!pub_DarBajaAvisos(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxiliarId) )	LO DEJO PARA DESPUES
-									{
-										printf("\n¡La baja del cliente y sus publicaciones fue un éxito!\n");
-									}
-									else
-									{
-										printf("\n¡La baja del cliente y sus publicaciones falló!\n");
-									}
-								}
-								else if(respuesta=='n')
-								{
-									printf("\n¡La baja del cliente y sus publicaciones se canceló!\n");
-								}
-								else
-								{
-									printf("\n¡Respuesta incorrecta!\n");
+									case 's':
+										if(!cli_DarBajaClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIndiceCliente))
+										{
+											retorno = pub_DarBajaAvisosArrayPunteros(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxIdCliente);
+											switch(retorno)
+											{
+												case 1:
+													printf("\n¡La baja del cliente y sus publicaciones fue un éxito!\n");
+													break;
+												case 0:
+													printf("\n¡La baja del cliente fue un éxito. No tenía publicaciones!\n");
+													break;
+												case -1:
+													printf("\n¡ERROR!\n");
+													break;
+											}
+										}
+										else
+										{
+											printf("\n¡La baja del cliente y sus publicaciones falló!\n");
+										}
+										break;
+									case 'n':
+										printf("\n¡La baja del cliente y sus publicaciones se canceló!\n");
+										break;
+									default:
+										printf("\n¡Respuesta incorrecta!\n");
 								}
 							}
 							else
@@ -228,16 +237,16 @@ int main(void)
 					}
 					break;
 				case 4: //Publicar
-					auxiliarIndice = pub_getEmptyIndexArrayPunteros(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES);
-					if(auxiliarIndice != -1)
+					auxIndiceAviso = pub_getEmptyIndexArrayPunteros(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES);
+					if(auxIndiceAviso != -1)
 					{
 						if(!cli_imprimirClientesArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES))
 						{
-							if(!utn_getNumero(&auxiliarId,"Ingrese ID de cliente: \n","\nINGRESO NO VALIDO. ",0,idCliente,2))	//Se solicita y valida ID cliente
+							if(!utn_getNumero(&auxIdCliente,"Ingrese ID de cliente: \n","\nINGRESO NO VALIDO. ",0,idCliente,2))	//Se solicita y valida ID cliente
 							{
-								if(cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxiliarId) != -1)	//Se verifica existencia de cliente
+								if(cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIdCliente) != -1)	//Se verifica existencia de cliente
 								{
-									retorno = pub_DarAltaAvisoArrayPunteros(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxiliarIndice,&idPublicacion,auxiliarId);
+									retorno = pub_DarAltaAvisoArrayPunteros(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxIndiceAviso,&idPublicacion,auxIdCliente);
 									switch(retorno)
 									{
 										case 1:
@@ -266,7 +275,7 @@ int main(void)
 						}
 						else
 						{
-							printf("\n¡ERROR!\n");
+							printf("\n¡No hay clientes a mostrar!\n");
 						}
 					}
 					else
@@ -275,12 +284,12 @@ int main(void)
 					}
 					break;
 				case 5: //Pausar publicación
-					if(!utn_getNumero(&auxiliarId,"Ingrese ID de publicación: \n","\nINGRESO NO VÁLIDO. ",0,idPublicacion,2))	//Se solicita y valida ID aviso
+					if(!utn_getNumero(&auxIdAviso,"Ingrese ID de publicación: \n","\nINGRESO NO VÁLIDO. ",0,idPublicacion,2))	//Se solicita y valida ID aviso
 					{
-						auxiliarIndice = pub_buscarIdAvisoArrayAvisos(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxiliarId);	//Se verifica existencia y ubicacion del aviso
-						if(auxiliarIndice != -1)
+						auxIndiceAviso = pub_buscarIdAvisoArrayAvisos(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxIdAviso);	//Se verifica existencia y ubicacion del aviso
+						if(auxIndiceAviso != -1)
 						{
-							auxIdCliente = arrayPunterosAvisos[auxiliarIndice]->idCliente;	//Conociendo la ubicacion del aviso puedo saber el ID del cliente
+							auxIdCliente = arrayPunterosAvisos[auxIndiceAviso]->idCliente;	//Conociendo la ubicacion del aviso puedo saber el ID del cliente
 							auxIndiceCliente = cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIdCliente); //Busco ubicacion del cliente en array
 							if(auxIndiceCliente != 1)
 							{
@@ -293,7 +302,7 @@ int main(void)
 									switch(respuesta)
 									{
 										case 's':
-											if(pub_cambiarEstadoDeAviso(arrayPunterosAvisos[auxiliarIndice]))
+											if(pub_cambiarEstadoDeAviso(arrayPunterosAvisos[auxIndiceAviso]))
 											{
 												printf("\n¡Se pausó la publicación!\n");
 											}
@@ -330,12 +339,12 @@ int main(void)
 					}
 					break;
 				case 6:	//Reanudar publicación
-					if(!utn_getNumero(&auxiliarId,"Ingrese ID de publicación: \n","\nINGRESO NO VÁLIDO. ",0,idPublicacion,2))	//Se solicita y valida ID aviso
+					if(!utn_getNumero(&auxIdAviso,"Ingrese ID de publicación: \n","\nINGRESO NO VÁLIDO. ",0,idPublicacion,2))	//Se solicita y valida ID de aviso
 					{
-						auxiliarIndice = pub_buscarIdAvisoArrayAvisos(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxiliarId);	//Se verifica existencia y ubicacion del aviso
-						if(auxiliarIndice != -1)
+						auxIndiceAviso = pub_buscarIdAvisoArrayAvisos(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,auxIdAviso);	//Se verifica existencia y ubicacion del aviso
+						if(auxIndiceAviso != -1)
 						{
-							auxIdCliente = arrayPunterosAvisos[auxiliarIndice]->idCliente;	//Conociendo la ubicacion del aviso puedo saber el ID del cliente
+							auxIdCliente = arrayPunterosAvisos[auxIndiceAviso]->idCliente;	//Conociendo la ubicacion del aviso puedo saber el ID del cliente
 							auxIndiceCliente = cli_buscarIdClienteArrayPunteros(arrayPunterosClientes,CANTIDAD_CLIENTES,auxIdCliente);	//Busco ubicacion del cliente en array
 							if(auxIndiceCliente != 1)
 							{
@@ -348,7 +357,7 @@ int main(void)
 									switch(respuesta)
 									{
 										case 's':
-											if(pub_cambiarEstadoDeAviso(arrayPunterosAvisos[auxiliarIndice]))
+											if(pub_cambiarEstadoDeAviso(arrayPunterosAvisos[auxIndiceAviso]))
 											{
 												printf("\n¡Se reanudó la publicación!\n");
 											}
@@ -396,15 +405,17 @@ int main(void)
 						printf("\n¡ERROR!\n");
 					}
 					break;
-				case 9:	//Informar clientes: Cliente con más avisos activos. Cliente con más avisos pausados. Cliente con más avisos.
+				case 9:	//Informar clientes: Cliente con más avisos activos.
 					if(info_informarClienteConAvisosMax(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,arrayPunterosClientes,CANTIDAD_CLIENTES) == -1)
 					{
 						printf("\n¡ERROR!\n");
 					}
+					//Cliente con más avisos pausados.
 					if(info_informarClientesConAvisosActivosMax(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,arrayPunterosClientes,CANTIDAD_CLIENTES) == -1)
 					{
 						printf("\n¡ERROR!\n");
 					}
+					//Cliente con más avisos.
 					if(info_informarClientesConAvisosPausadosMax(arrayPunterosAvisos,CANTIDAD_PUBLICACIONES,arrayPunterosClientes,CANTIDAD_CLIENTES) == -1)
 					{
 						printf("\n¡ERROR!\n");

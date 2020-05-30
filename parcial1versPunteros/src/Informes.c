@@ -13,89 +13,6 @@
 #include "utn.h"
 static const char ESTADOS_TIPOS[2][8]={"PAUSADA","ACTIVA"};
 
-/**
- * \brief Busca e informa lista de clientes junto con la cantidad de avisos activos
- * \param arrayClientes Puntero al espacio de memoria donde comienza el array a ser actualizado
- * \param limiteClientes Tamaño del array de clientes
- * \param arrayPublicaciones Puntero al espacio de memoria donde comienza el array a ser actualizado
- * \param limitePublicaciones Tamaño del array de publicaciones
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-/*
-int info_informarClientesConAvisosActivos(Cliente* arrayClientes,int limiteClientes,Publicacion* arrayPublicaciones,int limitePublicaciones)
-{
-	int respuesta = -1;
-	int i;
-	int avisosActivos;
-	if(arrayClientes!=NULL && limiteClientes>0 && arrayPublicaciones!=NULL && limitePublicaciones>0)
-	{
-		for(i=0; i<limiteClientes; i++)
-		{
-			if(arrayClientes[i].isEmpty != 1)
-			{
-				avisosActivos = pub_calcularAvisosActivosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i].idCliente);
-				if(avisosActivos != -1)
-				{
-					respuesta = 0;
-					info_imprimirClienteConCantidadAvisos(&arrayClientes[i],&avisosActivos);
-				}
-			}
-		}
-	}
-	return respuesta;
-}
-*/
-/**
- * \brief Imprime los datos de una publicacion junto con CUIT del cliente correspondiente
- * \param pElementoAviso Puntero al elemento del array que se busca imprimir
- * \param pElementoCliente Puntero al elemento del array que se busca imprimir
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int info_imprimirAvisoConCuit(Publicacion* pElementoAviso,Cliente* pElementoCliente)
-{
-	int retorno = -1;
-	if(pElementoAviso!=NULL)
-	{
-		retorno=0;
-		printf("\nID Publicacion: %d - Rubro: %d - Aviso: %s - Estado: %s - IdCliente: %d - CUIT: %s\n",pElementoAviso->idPublicacion,pElementoAviso->rubro,pElementoAviso->txtAviso,ESTADOS_TIPOS[pElementoAviso->estado],pElementoAviso->idCliente,pElementoCliente->cuit);
-	}
-	return retorno;
-}
-/**
- * \brief Busca e informa publicaciones con todos sus datos junto con el cuit del cliente correspondiente
- * \param arrayPublicaciones Puntero a espacio de memoria donde comienza el array a ser actualizado
- * \param limitePublicaciones Tamaño del array publicaciones
- * \param arrayClientes Puntero a espacio de memoria donde comienza el array a ser actualizado
- * \param limiteClientes Tamaño del array de clientes
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-/*
-int info_informarAvisosConCuit(Publicacion* arrayPublicaciones,int limitePublicaciones,Cliente* arrayClientes,int limiteClientes)
-{
-	int respuesta = -1;
-	int i;
-	int auxiliarIndiceCliente;
-	if(arrayPublicaciones != NULL && limitePublicaciones > 0)
-	{
-		for(i=0; i<limitePublicaciones; i++)
-		{
-			if(arrayPublicaciones[i].isEmpty == 0)
-			{
-				auxiliarIndiceCliente = cli_buscarIdCliente(arrayClientes,limiteClientes,arrayPublicaciones[i].idCliente);
-				if(auxiliarIndiceCliente != -1)
-				{
-					respuesta = 0;
-					info_imprimirAvisoConCuit(&arrayPublicaciones[i],&arrayClientes[auxiliarIndiceCliente]);
-				}
-			}
-		}
-	}
-	return respuesta;
-}
-*/
 // FUNCIONES VERSION PUNTEROS
 /**
  * \brief Busca e informa lista de clientes junto con la cantidad de avisos activos
@@ -111,13 +28,13 @@ int info_informarClientesConAvisosActivos(Cliente* arrayClientes[],int limiteCli
 	int respuesta = -1;
 	int i;
 	int avisosActivos;
-	if(arrayClientes!=NULL && limiteClientes>0 && arrayPublicaciones!=NULL && limitePublicaciones>0)
+	if(arrayClientes != NULL && limiteClientes > 0 && arrayPublicaciones != NULL && limitePublicaciones > 0)
 	{
 		for(i=0; i<limiteClientes; i++)
 		{
 			if(arrayClientes[i] != 0)
 			{
-				avisosActivos = pub_calcularAvisosActivosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente);
+				avisosActivos = pub_calcularAvisosDeClientePorEstado(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente,ESTADO_ACTIVO);
 				if(avisosActivos != -1)
 				{
 					respuesta = 0;
@@ -138,7 +55,7 @@ int info_informarClientesConAvisosActivos(Cliente* arrayClientes[],int limiteCli
  * \param limitePublicaciones Tamaño del array publicaciones
  * \param arrayClientes Puntero a espacio de memoria donde comienza el array a ser actualizado
  * \param limiteClientes Tamaño del array de clientes
- * \return Retorna 0 (EXITO) y -1 (ERROR)
+ * \return Retorna 0 si pudo imprimir los datos del aviso junto con el cuit correspondiente, -1 si no hay avisos para imprimir o ERROR
  *
  */
 int info_informarAvisosConCuit(Publicacion* arrayPublicaciones[],int limitePublicaciones,Cliente* arrayClientes[],int limiteClientes)
@@ -169,26 +86,6 @@ int info_informarAvisosConCuit(Publicacion* arrayPublicaciones[],int limitePubli
 	return respuesta;
 }
 /**
- * \brief Imprime los datos de un cliente junto con la cantidad de avisos
- * \param pElemento Puntero al elemento del array que se busca imprimir
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
-{
-	int retorno = -1;
-	if(pElemento != NULL)
-	{
-		retorno = 0;
-		printf("\nID: %d - Nombre: %s - Apellido: %s - CUIT: %s - Avisos: %d\n",pElemento->idCliente,
-																				pElemento->nombre,
-																				pElemento->apellido,
-																				pElemento->cuit,
-																				*totalAvisos);
-	}
-	return retorno;
-}
-/**
  * \brief Busca e informa cliente con mayor cantidad de avisos
  * \param arrayPublicaciones Array de publicaciones a ser analizado
  * \param limitePublicaciones Tamaño del array de publicaciones
@@ -204,7 +101,7 @@ int info_informarClienteConAvisosMax(Publicacion* arrayPublicaciones[],int limit
 	int cantidadAvisosMax;
 	Cliente clienteConMasAvisos;
 	int i;
-	if(arrayClientes!=NULL && limiteClientes>0 && arrayPublicaciones!=NULL && limitePublicaciones>0)
+	if(arrayClientes != NULL && limiteClientes > 0 && arrayPublicaciones != NULL && limitePublicaciones > 0)
 	{
 		for(i=0; i<limiteClientes; i++)
 		{
@@ -225,6 +122,26 @@ int info_informarClienteConAvisosMax(Publicacion* arrayPublicaciones[],int limit
 		pub_imprimirAvisosDeCliente(arrayPublicaciones,limitePublicaciones,clienteConMasAvisos.idCliente);
 	}
 	return respuesta;
+}
+/**
+ * \brief Imprime los datos de un cliente junto con la cantidad de avisos
+ * \param pElemento Puntero al elemento del array que se busca imprimir
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
+{
+	int retorno = -1;
+	if(pElemento != NULL)
+	{
+		retorno = 0;
+		printf("\nID: %d - Nombre: %s - Apellido: %s - CUIT: %s - Avisos: %d\n",pElemento->idCliente,
+																				pElemento->nombre,
+																				pElemento->apellido,
+																				pElemento->cuit,
+																				*totalAvisos);
+	}
+	return retorno;
 }
 /**
  * \brief Busca e informa los clientes con mayor cantidad de avisos ACTIVOS
@@ -248,7 +165,7 @@ int info_informarClientesConAvisosActivosMax(Publicacion* arrayPublicaciones[],i
 		{
 			if(arrayClientes[i] != 0)
 			{
-				cantidadAvisos = pub_calcularAvisosActivosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente);
+				cantidadAvisos = pub_calcularAvisosDeClientePorEstado(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente,ESTADO_ACTIVO);
 				if( cantidadAvisos != -1 &&
 					(i==0 || cantidadAvisos > cantidadAvisosMax) )
 				{
@@ -286,7 +203,7 @@ int info_informarClientesConAvisosPausadosMax(Publicacion* arrayPublicaciones[],
 		{
 			if(arrayClientes[i] != 0)
 			{
-				cantidadAvisos = pub_calcularAvisosPausadosDeCliente(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente);
+				cantidadAvisos = pub_calcularAvisosDeClientePorEstado(arrayPublicaciones,limitePublicaciones,arrayClientes[i]->idCliente,ESTADO_PAUSA);
 				if( cantidadAvisos != -1 &&
 					(i==0 || cantidadAvisos > cantidadAvisosMax) )
 				{
@@ -405,4 +322,25 @@ int info_informarRubroConMenosAvisosActivos(Publicacion* array[],int limite)
 		pub_imprimirAvisosDeRubro(array,limite,rubroConMenosAvisos);
 	}
 	return respuesta;
+}
+
+/**
+ * \brief Imprime los datos de un cliente junto con la cantidad de avisos
+ * \param pElemento Puntero al elemento del array que se busca imprimir
+ * \return Retorna 0 (EXITO) y -1 (ERROR)
+ *
+ */
+int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
+{
+	int retorno = -1;
+	if(pElemento != NULL)
+	{
+		retorno = 0;
+		printf("\nID: %d - Nombre: %s - Apellido: %s - CUIT: %s - Avisos: %d\n",pElemento->idCliente,
+																				pElemento->nombre,
+																				pElemento->apellido,
+																				pElemento->cuit,
+																				*totalAvisos);
+	}
+	return retorno;
 }
