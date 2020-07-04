@@ -123,26 +123,7 @@ int info_informarClienteConAvisosMax(Publicacion* arrayPublicaciones[],int limit
 	}
 	return respuesta;
 }
-/**
- * \brief Imprime los datos de un cliente junto con la cantidad de avisos
- * \param pElemento Puntero al elemento del array que se busca imprimir
- * \return Retorna 0 (EXITO) y -1 (ERROR)
- *
- */
-int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
-{
-	int retorno = -1;
-	if(pElemento != NULL)
-	{
-		retorno = 0;
-		printf("\nID: %d - Nombre: %s - Apellido: %s - CUIT: %s - Avisos: %d\n",pElemento->idCliente,
-																				pElemento->nombre,
-																				pElemento->apellido,
-																				pElemento->cuit,
-																				*totalAvisos);
-	}
-	return retorno;
-}
+
 /**
  * \brief Busca e informa los clientes con mayor cantidad de avisos ACTIVOS
  * \param arrayPublicaciones Array de publicaciones a ser analizado
@@ -330,7 +311,7 @@ int info_informarRubroConMenosAvisosActivos(Publicacion* array[],int limite)
  * \return Retorna 0 (EXITO) y -1 (ERROR)
  *
  */
-int info_imprimirClienteConCantidadAvisos(Cliente* pElemento,int* totalAvisos)
+int info_imprimirClienteConCantidadAvisos(Cliente* pElemento, int* totalAvisos)
 {
 	int retorno = -1;
 	if(pElemento != NULL)

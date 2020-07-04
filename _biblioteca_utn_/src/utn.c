@@ -503,7 +503,9 @@ static int esNombre(char* cadena,int longitud)
 				cadena[i] != 'í' &&
 				cadena[i] != 'ó' &&
 				cadena[i] != 'ú' &&
-				cadena[i] != '´' )
+				cadena[i] != '´' &&
+				cadena[i] != '-' &&
+				cadena[i] != ' ' )
 			{
 				retorno = 0;
 				break;
@@ -599,7 +601,9 @@ static int esApellido(char* cadena,int longitud)
 				cadena[i] != 'ó' &&
 				cadena[i] != 'ú' &&
 				cadena[i] != ' ' &&
-				cadena[i] != '´' )
+				cadena[i] != '´' &&
+				cadena[i] != '-' &&
+				cadena[i] != ' ' )
 			{
 				retorno = 0;
 				break;
