@@ -16,7 +16,7 @@
 int main(void)
 {
 	setbuf(stdout,NULL);
-	int auxInt;
+	int auxiliarInt;
 /*	char nombre[11]="ZZZZZZZZZZ"; // '\0'
 	char apellido[11]="PEREZ"; // '\0'
 	char auxiliar[30]=""; // '\0'
@@ -36,9 +36,9 @@ int main(void)
 */
 	while(1)
 	{
-		if(utn_getNumero(&auxInt,"NUMERO?: \n","ERROR.\n",-2,10,2)==0)
+		if(utn_getNumero(&auxiliarInt, "NUMERO?: ", "\nERROR. ", -2, 10, 2) == 0)
 		{
-			printf("\nEl numero es  %d\n",auxInt);
+			printf("\nEl numero es  %d\n", auxiliarInt);
 		}
 	}
 

@@ -34,7 +34,7 @@ int main(void)
 //Recorro de forma secuencial para inicializar el vector
 	for(i=0; i<EDADES_SIZE; i++)
 	{
-/*Inicializo el array con un valor entero negativo para luego detectar
+/*Inicializo el array con un valor entero negativo para luego validar
   si se cargó en el índice del vector de manera correcta.*/
 		edades[i] = -1;
 	}
