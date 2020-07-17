@@ -10,10 +10,11 @@
 
 static int esNumerica(char* cadena);
 static int getInt(int* pResultado);
-static int myGets(char* cadena,int longitud);
+static int myGets(char* cadena, int longitud);
 
 /**
  * \brief Solicita el ingreso de un numero al usuario, luego de verificarlo devuelve el resultado
+ *
  * \param pResultado Puntero al espacio de memoria donde se dejara el resultado de la funcion
  * \param mensaje Es el mensaje a ser mostrado
  * \param mensajeError Es el mensaje de Error a ser mostrado
@@ -22,40 +23,41 @@ static int myGets(char* cadena,int longitud);
  * \return Retorna 0 si se obtuvo el numero y -1 si no
  *
  */
-int utn_getNumero(int* pResultado,char* mensaje,char* mensajeError,int minimo,int maximo,int reintentos)
+int utn_getNumero(int* pResultado, char* mensaje, char* mensajeError, int minimo, int maximo, int reintentos)
 {
-	int retorno=-1;
+	int retorno = -1;
 	int buffer;
 
-	if(pResultado!=NULL && mensaje!=NULL && mensajeError!=NULL && minimo<=maximo && reintentos>=0)
+	if(pResultado != NULL && mensaje != NULL && mensajeError != NULL && minimo <= maximo && reintentos >= 0)
 	{
 		do
 		{
 			printf("%s",mensaje);
-			if(getInt(&buffer)==0 && buffer>=minimo && buffer<=maximo)
+			if(getInt(&buffer) == 0 && buffer >= minimo && buffer <= maximo)
 			{
-				*pResultado=buffer;
-				retorno=0;
+				*pResultado = buffer;
+				retorno = 0;
 				break;
 			}
 			reintentos--;
 			printf("%s",mensajeError);
-		}while(reintentos>=0);
+		}while(reintentos >= 0);
 	}
 	return retorno;
 }
 /**
  * \brief getInt busca y verifica si lo que se ingresó es un número.
+ *
  * \param pResultado Puntero al espacio de memoria donde se dejara el resultado de la funcion
  * \return Retorna 0 (EXITO) si se obtiene un numero entero y -1 (ERROR) si no
  *
  */
 static int getInt(int* pResultado)
 {
-    int retorno=-1;
+    int retorno = -1;
     char bufferString[4096];
 
-    if(myGets(bufferString,sizeof(bufferString))==0 && esNumerica(bufferString))
+    if(myGets(bufferString,sizeof(bufferString)) == 0 && esNumerica(bufferString))
     {
     	retorno=0;
     	*pResultado=atoi(bufferString);
@@ -67,42 +69,55 @@ static int getInt(int* pResultado)
 /**
  * \brief Lee de stdin hasta que encuentra un '\n' o hasta que haya copiado en cadena
  *        un máximo de 'longitud - 1' caracteres.
+ *
  * \param pResultado Puntero al espacio de memoria donde se copiara la cadena obtenida
  * \param longitud Define el tamaño de cadena
  * \return Retorna 0 (EXITO) si se obtiene una cadena y -1 (ERROR) si no
  *
  */
-static int myGets(char* cadena,int longitud)
+static int myGets(char* cadena, int longitud)
 {
 	fflush(stdin);
+/* La función fgets() lee desde un puntero a archivo (FILE*), incluyendo un carácter de nueva línea (\n),
+ * y lo escribe al array apuntado por el primer parámetro.
+ * Se detiene la lectura cuando se leen caracteres (n-1), se lee el carácter de nueva línea (el cual es retenido)
+ * o se alcanza el final del archivo (EOF), lo que ocurra primero.
+ * Un carácter nulo es escrito inmediatamente después del último carácter leído en el array.
+ *
+ */
 	fgets(cadena,longitud,stdin);
-	cadena[strlen(cadena)-1]='\0';
+/* En caso de que se haya guardado el caracter '\n' en el array
+ * Sobreescribo el caracter '\0' en (n-1).
+ *
+ */
+	cadena[strlen(cadena)-1] = '\0';
 
 	return 0;
 }
 
 
 /**
- * \brief Verifica si la cadena ingresada es numerica
- * \param cadena Cadena de caracteres a ser analizada
- * \return Retorna 1 (vardadero) si la cadena es numerica y 0 (falso) si no lo es
+ * \brief Verifica si la cadena ingresada es numerica.
+ *
+ * \param cadena Cadena de caracteres a ser analizada.
+ * \return Retorna 1 (vardadero) si la cadena es numerica y 0 (falso) si no lo es.
  *
  */
 static int esNumerica(char* cadena)
 {
-	int retorno=1;
-	int i=0;
+	int retorno = 1;
+	int i = 0;
 
-	if(cadena[0]=='-' || cadena[0]=='+')
+	if(cadena[0] == '-' || cadena[0] == '+')
 	{
 		i=1;
 	}
 
-	for( ; cadena[i]!='\0'; i++)
+	for( ; cadena[i] != '\0'; i++)
 	{
-		if(cadena[i]>'9' || cadena[i]<'0')
+		if(cadena[i] > '9' || cadena[i] < '0')
 		{
-			retorno=0;
+			retorno = 0;
 			break;
 		}
 	}
