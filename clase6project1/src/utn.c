@@ -33,6 +33,8 @@ int utn_getNumero(int* pResultado, char* mensaje, char* mensajeError, int minimo
 		do
 		{
 			printf("%s",mensaje);
+/*			scanf("%d",&bufferInt); <-- Se deja de usar scanf() para controlar el ingreso de caracteres, evitando el buffer overflow
+										  (desbordamiento de bufer) */
 			if(getInt(&buffer) == 0 && buffer >= minimo && buffer <= maximo)
 			{
 				*pResultado = buffer;
@@ -57,10 +59,10 @@ static int getInt(int* pResultado)
     int retorno = -1;
     char bufferString[4096];
 
-    if(myGets(bufferString,sizeof(bufferString)) == 0 && esNumerica(bufferString))
+    if(myGets(bufferString, sizeof(bufferString)) == 0 && esNumerica(bufferString))
     {
-    	retorno=0;
-    	*pResultado=atoi(bufferString);
+    	retorno = 0;
+    	*pResultado = atoi(bufferString);
     }
     return retorno;
 }
