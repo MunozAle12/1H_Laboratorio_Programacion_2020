@@ -27,10 +27,7 @@
 #include <string.h>
 #include "Persona.h"
 #include "utn.h"
-#define SIZE 64
 #define QTY_PERSONAS 200
-#define TRUE 1
-#define FALSE 0
 
 int main(void)
 {

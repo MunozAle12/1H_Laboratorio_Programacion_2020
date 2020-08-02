@@ -7,12 +7,14 @@
 
 #ifndef PERSONA_H_
 #define PERSONA_H_
-#define NOMBRE_LEN 64
+#define SIZE 64 //Valor que define la longitud del array para nombre y apellido.
+#define TRUE 1 //Valor que define el estado del flag isEmpty.
+#define FALSE 0 //Valor que define el estado del flag isEmpty.
 
 struct persona
 {
-	char nombre[NOMBRE_LEN];
-	char apellido[NOMBRE_LEN];
+	char nombre[SIZE];
+	char apellido[SIZE];
 	int legajo;
 	int isEmpty;
 }typedef Persona;

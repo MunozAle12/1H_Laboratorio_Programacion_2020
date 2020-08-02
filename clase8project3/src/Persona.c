@@ -9,8 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Persona.h"
-#define TRUE 1
-#define FALSE 0
 
 /**
  * \brief Inicializa array del tipo Personas con un valor conocido.
@@ -98,19 +96,19 @@ int pers_buscarLegajo(Persona* arrayPersonas, int len, int valorBuscado)
  * \brief Muestra por pantalla los datos guardados de las personas en la agenda.
  *
  * \param arrayPersonas Es el puntero a espacio de memoria donde empieza el array.
- * \param cantidadPersonas Es el valor que define el tamaño de arrayPersonas.
+ * \param longitud Es el valor que define el tamaño de arrayPersonas.
  * \return Retorna 0 si se pudo imprimir, -1 si hubo error.
  *
  */
-int pers_imprimirAgenda(Persona* arrayPersonas, int cantidadPersonas)
+int pers_imprimirAgenda(Persona* arrayPersonas, int longitud)
 {
 	int retorno = -1;
 	int i;
 
-	if(arrayPersonas != NULL && cantidadPersonas > 0)
+	if(arrayPersonas != NULL && longitud > 0)
 	{
 		retorno = 0;
-		for(i = 0; i < cantidadPersonas; i++)
+		for(i = 0; i < longitud; i++)
 		{
 			if(arrayPersonas[i].isEmpty != TRUE)
 			{
@@ -125,7 +123,7 @@ int pers_imprimirAgenda(Persona* arrayPersonas, int cantidadPersonas)
  * \brief Ordena la agenda por apellido de forma ascendente (de A-Z).
  *
  * \param arrayPersonas Puntero al espacio de memoria donde empieza el array a ser analizado.
- * \param cantidadPersonas Es el valor que representa la cantidad máxima de personas que tiene la agenda.
+ * \param longitud Es el valor que representa la longitud del array.
  * \return Retorna -1 si hubo error, 0 si se ordeno la agenda con éxito.
  *
  */
@@ -143,7 +141,7 @@ int pers_ordenarAgendaPorApellido(Persona* arrayPersonas, int longitud)
 		limiteComparacion = longitud - 1;
 		do
 		{
-			flagSwap = 0;
+			flagSwap = FALSE;
 			for(i = 0; i < limiteComparacion; i++)
 			{
 				if(arrayPersonas[i].isEmpty == TRUE)
@@ -156,12 +154,12 @@ int pers_ordenarAgendaPorApellido(Persona* arrayPersonas, int longitud)
 					{
 						continue;
 					}
-					if(strncmp(arrayPersonas[i].apellido, arrayPersonas[j].apellido, NOMBRE_LEN) > 0) //Ascendente (A - Z)
+					if(strncmp(arrayPersonas[i].apellido, arrayPersonas[j].apellido, SIZE) > 0) //Ascendente (A - Z)
 					{
 						auxiliarPersona = arrayPersonas[i];
 						arrayPersonas[i] = arrayPersonas[j];
 						arrayPersonas[j] = auxiliarPersona;
-						flagSwap = 1;
+						flagSwap = TRUE;
 					}
 				}
 			}
